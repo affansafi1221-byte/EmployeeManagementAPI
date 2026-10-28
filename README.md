@@ -97,4 +97,80 @@ erDiagram
 
 | Table | Purpose |
 |---|---|
-| `Employees` | Employee records
+| `Employees` | Employee records managed through the Employee API |
+| `AcountUsers` | Login accounts used for registration and JWT authentication |
+
+### Notes
+
+- Both tables use a `Guid` primary key.
+- The two tables are independent: login accounts are not linked to employee records.
+- `Employees.Department` is currently a plain text column.
+- The full SQL is in [`sql/schema.sql`](sql/schema.sql), with example queries in [`sql/queries.sql`](sql/queries.sql).
+
+### Planned database improvements
+
+- Add a `Departments` table and replace `Employees.Department` with a `DepartmentId` foreign key
+- Add a `Salaries` table linked to `Employees`
+- Add a unique constraint on email addresses
+- Rename `AcountUsers` to `Users`
+
+## API Endpoints
+
+### Employee (requires a valid JWT)
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/api/Employee/GetAllEmployees` | List all employees |
+| GET | `/api/Employee/GetEmployeeById/{id}` | Get one employee |
+| POST | `/api/Employee/CreateEmployee` | Create an employee |
+| PUT | `/api/Employee/UpdateEmployee` | Update an employee |
+| DELETE | `/api/Employee/DeleteEmployee?id={id}` | Delete an employee |
+
+### Auth
+
+| Method | Endpoint | Description |
+|---|---|---|
+| POST | `/api/Auth/<register-route>` | Register a user |
+| POST | `/api/Auth/<login-route>` | Log in and receive a JWT |
+
+## Getting Started
+
+### Prerequisites
+
+- [.NET 10 SDK](https://dotnet.microsoft.com/download)
+- SQL Server or SQL Server LocalDB
+
+### Run locally
+
+```bash
+git clone https://github.com/affansafi1221-byte/EmployeeManagementAPI.git
+cd EmployeeManagementAPI
+
+# create the database from the migrations
+dotnet ef database update
+
+# run the API
+dotnet run
+```
+
+Then call the API from Postman. Log in first, then send the returned token as a Bearer token on the Employee endpoints.
+
+## Roadmap
+
+- [ ] Link `Employee` to `Department` with a foreign key
+- [ ] Return proper HTTP status codes (404, 400) instead of always 200
+- [ ] Input validation
+- [ ] Unit tests with xUnit
+- [ ] Pagination and search for employees
+- [ ] Postman collection and screenshots
+
+## Learning Goals
+
+- Understand REST API development
+- Practice authentication and authorization
+- Work with databases using Entity Framework Core
+- Learn API testing with Postman
+
+## Disclaimer
+
+This is a learning project and is not intended for production use yet.
